@@ -106,6 +106,14 @@ export default function SimuladorHub() {
             <span style={{ fontSize: fs(24), color: altoContraste ? '#fff' : '#9ca3af' }}>›</span>
           </button>
         ))}
+
+        <a
+          href="?acessivel=galeria"
+          className="text-center mt-2"
+          style={{ fontSize: 13, color: subtexto, textDecoration: 'underline' }}
+        >
+          Ver telas com fonte ampliada
+        </a>
       </div>
 
       <BotaoAjuda />

@@ -34,6 +34,13 @@ O protótipo roda no browser com aparência de smartphone (390×844 px) e cobre 
 ### Praticar Aplicativos
 - Hub de acesso aos simuladores de apps reais: WhatsApp, Google Maps, YouTube, iFood e Gov.br
 - Ícones reais de cada marca via `react-icons/si`
+- Link discreto no rodapé da tela ("Ver telas com fonte ampliada") para a galeria de telas estáticas de acessibilidade visual
+
+### Telas de Acessibilidade Visual (galeria estática)
+- Versões estáticas da primeira tela de alguns apps simulados (WhatsApp e Gov.br), com fonte, ícones e áreas de toque bem maiores que o padrão do app
+- Página índice (galeria) com cards de acesso a cada tela
+- Totalmente desacoplada do roteamento principal (`AppContext`/`App.jsx`): acessível via parâmetro de URL `?acessivel=galeria` (ou `whatsapp` / `govbr`), resolvido em `main.jsx`
+- Serve como protótipo visual para avaliação, antes de decidir como integrá-la ao fluxo do app
 
 ### Aprender a Usar (Alfabetização Visual)
 - Glossário de 20 ícones do celular com nome e explicação em linguagem simples
@@ -97,8 +104,9 @@ navega-plus/
 │   │   ├── SimuladorHub.jsx         # Hub de entrada dos simuladores
 │   │   └── AlfabetizacaoVisual.jsx  # Glossário de ícones + jogo
 │   ├── simuladores/                 # Telas individuais de cada app simulado
+│   ├── paginas-acessiveis/          # Galeria de telas estáticas com fonte ampliada (fora do roteamento principal)
 │   ├── App.jsx                      # Roteador principal
-│   └── main.jsx
+│   └── main.jsx                     # Decide entre <App/> e as páginas acessíveis via query param
 ├── DOCUMENTACAO.md                  # Documentação técnica detalhada
 └── package.json
 ```

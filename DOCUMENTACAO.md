@@ -95,6 +95,15 @@ Protótipo de interface (front-end estático, sem backend) do **Ecossistema Nave
 - Cinco apps disponíveis: WhatsApp, Google Maps, YouTube, iFood e Gov.br
 - Ícones reais de cada marca usando `react-icons/si` (Simple Icons): `SiWhatsapp`, `SiGooglemaps`, `SiYoutube`, `SiIfood`
 - Gov.br não disponível em bibliotecas de ícones — representado por componente `GovBrIcon` customizado com tipografia e cores oficiais da marca (#1351B4 + #7ee8a2)
+- Link discreto no rodapé da lista ("Ver telas com fonte ampliada") que leva à galeria de telas de acessibilidade visual (`?acessivel=galeria`)
+
+#### Telas de Acessibilidade Visual (galeria estática)
+- Protótipo de versões estáticas da primeira tela de alguns apps simulados — hoje cobre WhatsApp (lista de conversas) e Gov.br (documentos e serviços) — com fonte, ícones/avatares e áreas de toque ampliados além do padrão do app
+- Objetivo: servir de referência visual para avaliar uma acessibilidade ainda maior que os três níveis de `fs()`, antes de decidir como (ou se) integrar isso ao fluxo principal
+- **Desacoplada de propósito** do roteamento em `AppContext`/`App.jsx` — não usa `navegar()`/`voltar()` nem o estado `screen`. Vive em `src/paginas-acessiveis/` e é resolvida em `main.jsx` via `URLSearchParams`, checando o parâmetro `acessivel` na query string (`galeria`, `whatsapp` ou `govbr`); se ausente, renderiza `<App/>` normalmente
+- `MolduraTelefone.jsx` replica visualmente o `PhoneFrame` mas sem depender do `AppContext` (não lê `altoContraste`), já que essas telas não fazem parte do contexto do app
+- `GaleriaAcessivel.jsx` é a página índice: cards simples com nome, descrição e link (`<a href="?acessivel=...">`) para cada tela — sem ícones, apenas texto
+- Navegação entre as páginas é feita por link `<a>` com recarregamento de página (não por estado React), consistente com o desacoplamento do roteamento principal
 
 #### Aprender a Usar (Módulo de Alfabetização Visual)
 
@@ -157,6 +166,7 @@ Protótipo de interface (front-end estático, sem backend) do **Ecossistema Nave
 - Notificações de horários de medicamentos
 
 ### UX e Conteúdo
+- Definir como (e se) a galeria de telas de acessibilidade visual (`paginas-acessiveis/`) será exposta no fluxo principal do app — hoje só é acessível via link discreto no SimuladorHub e query param na URL
 - Onboarding guiado com tutorial interativo da interface
 - Mais especialidades médicas, horários e unidades de saúde no simulador de agendamento
 - Tela de perfil do usuário com histórico de aprendizado
@@ -199,8 +209,13 @@ navega-plus/
 │   │   ├── SimuladorHub.jsx      # Hub de entrada dos simuladores de apps
 │   │   └── AlfabetizacaoVisual.jsx  # Lista educativa + jogo de associação
 │   ├── simuladores/              # Telas individuais de cada app simulado
+│   ├── paginas-acessiveis/       # Galeria estática com fonte ampliada, fora do roteamento principal
+│   │   ├── GaleriaAcessivel.jsx  # Página índice com cards de acesso
+│   │   ├── TelaAcessivelWhatsApp.jsx
+│   │   ├── TelaAcessivelGovBr.jsx
+│   │   └── MolduraTelefone.jsx   # Frame de smartphone sem dependência do AppContext
 │   ├── App.jsx                   # Roteador principal
-│   ├── main.jsx
+│   ├── main.jsx                  # Decide entre <App/> e as páginas acessíveis via query param `acessivel`
 │   └── index.css
 ├── DOCUMENTACAO.md
 ├── package.json
