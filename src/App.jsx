@@ -8,6 +8,12 @@ import Agendamento from './screens/Agendamento'
 import Medicamentos from './screens/Medicamentos'
 import Documentos from './screens/Documentos'
 import AlfabetizacaoVisual from './screens/AlfabetizacaoVisual'
+import SimuladorHub from './screens/SimuladorHub'
+import SimuladorWhatsApp from './simuladores/SimuladorWhatsApp'
+import SimuladorMaps from './simuladores/SimuladorMaps'
+import SimuladorYouTube from './simuladores/SimuladorYouTube'
+import SimuladorIfood from './simuladores/SimuladorIfood'
+import SimuladorGovBr from './simuladores/SimuladorGovBr'
 import './index.css'
 
 function Router() {
@@ -22,6 +28,12 @@ function Router() {
     medicamentos: <Medicamentos />,
     documentos: <Documentos />,
     aprender: <AlfabetizacaoVisual />,
+    simuladores: <SimuladorHub />,
+    'sim-whatsapp': <SimuladorWhatsApp />,
+    'sim-maps': <SimuladorMaps />,
+    'sim-youtube': <SimuladorYouTube />,
+    'sim-ifood': <SimuladorIfood />,
+    'sim-govbr': <SimuladorGovBr />,
   }
 
   return telas[screen] || <Home />

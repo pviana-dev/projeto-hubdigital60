@@ -14,6 +14,7 @@ Protótipo de interface (front-end estático, sem backend) do **Ecossistema Nave
 | Vite | 8 | Bundler e servidor de desenvolvimento |
 | Tailwind CSS | 3 | Estilização utilitária responsiva |
 | Context API (React) | — | Gerenciamento de estado global (tela ativa, acessibilidade) |
+| react-icons | 5.7.0 | Ícones de marcas (Simple Icons) e UI (Material Design) |
 | JavaScript (ESM) | — | Linguagem principal |
 | Node.js | 26 | Ambiente de execução local |
 
@@ -29,11 +30,22 @@ Protótipo de interface (front-end estático, sem backend) do **Ecossistema Nave
 - `BarraTopo` aceita prop `onVoltar` opcional para sobrescrever o comportamento padrão do botão "Voltar" — usado em telas com navegação interna por estado local (ex: detalhe de documento), evitando que o botão pule níveis indevidos no histórico
 
 ### Acessibilidade
-- **Tamanho de fonte ajustável**: três opções (Normal, Grande, Muito Grande), aplicadas globalmente
-- **Modo Alto Contraste**: fundo escuro com texto claro e destaque em amarelo, ativável por toggle
-- **Botões amplos**: área de toque mínima de 64px em todos os elementos interativos
-- **Linguagem simples**: sem jargões técnicos ou estrangeirismos em toda a interface
-- **Prévia em tempo real** das configurações de acessibilidade antes de salvar
+
+#### Tamanho de Fonte Global (`fs()`)
+- Três opções de fonte na tela de Acessibilidade: Normal (14px base), Grande (18px base) e Muito Grande (21px base)
+- O tamanho escolhido é propagado globalmente via Context API e aplicado em **todas as telas e componentes** sem exceção, incluindo conteúdo renderizado via `createPortal`
+- Implementação: função `fs(n)` exposta pelo contexto — `Math.round(n * fontSizePx / 18)` — escala qualquer valor de pixel proporcionalmente ao tamanho base selecionado. Todo `fontSize` inline no código usa `fs(n)` em vez de valor fixo; classes Tailwind de texto (`text-xl`, `text-base` etc.) foram removidas e substituídas por estilos inline escaláveis
+- A abordagem `fs()` foi escolhida sobre CSS `zoom` porque: (1) `zoom` causava clipping horizontal ao ultrapassar 1× e (2) não afetava conteúdo renderizado via `createPortal`, enquanto `fs()` funciona em qualquer contexto por ser uma função JavaScript chamada em tempo de render
+
+#### Modo Alto Contraste
+- Fundo escuro com texto claro e destaques em amarelo (#facc15), ativável por toggle
+- Bordas coloridas substituem fundos coloridos para manter contraste
+
+#### Outras práticas
+- Botões com área de toque mínima de 64px em todos os elementos interativos
+- Linguagem simples, sem jargões técnicos ou estrangeirismos
+
+---
 
 ### Telas
 
@@ -69,23 +81,41 @@ Protótipo de interface (front-end estático, sem backend) do **Ecossistema Nave
 - Aviso de simulação no topo
 
 #### Meus Documentos
-- Lista de 3 documentos: RG Digital, CPF e Carteira de Vacinação
-- Cada documento abre uma tela de detalhe com card visual e campos estruturados
-- Aviso de documento fictício em todas as telas de detalhe
+- Repositório pessoal de documentos — não é uma simulação, dados persistem durante a sessão
+- Três documentos pré-cadastrados como exemplo: RG Digital, CPF e Carteira de Vacinação
+- Cada documento abre uma tela de detalhe com card visual em gradiente e campos estruturados
+- **Adição de documentos** pelo usuário:
+  - Formulário com: nome do documento (obrigatório), nome completo, número, até 2 campos extras com rótulo livre e seletor de cor (6 opções predefinidas)
+  - Documentos adicionados aparecem na lista no mesmo padrão visual dos pré-cadastrados
+  - Botão "🗑️ Excluir este documento" disponível apenas nos documentos adicionados pelo usuário (os pré-cadastrados não podem ser excluídos)
+  - Dados armazenados apenas em memória (`useState`) — são perdidos ao encerrar o aplicativo
+
+#### Praticar Aplicativos (SimuladorHub)
+- Hub de entrada para os simuladores de aplicativos reais
+- Cinco apps disponíveis: WhatsApp, Google Maps, YouTube, iFood e Gov.br
+- Ícones reais de cada marca usando `react-icons/si` (Simple Icons): `SiWhatsapp`, `SiGooglemaps`, `SiYoutube`, `SiIfood`
+- Gov.br não disponível em bibliotecas de ícones — representado por componente `GovBrIcon` customizado com tipografia e cores oficiais da marca (#1351B4 + #7ee8a2)
 
 #### Aprender a Usar (Módulo de Alfabetização Visual)
-- **Lista educativa**: 10 ícones universais com nome e explicação em linguagem simples
-- **Cards clicáveis com variações por ícone**: ao tocar em qualquer card da lista, abre um bottom sheet (painel deslizante) exibindo:
-  - Cabeçalho com o ícone, nome e descrição geral
-  - 4 variações visuais do ícone, cada uma identificando o app onde aparece e uma explicação em linguagem simples
-  - Pode ser fechado pelo botão "Entendi", pelo botão "✕" ou tocando no fundo escuro
-  - Ícones cobertos: Pesquisar, Configurações, Início, Notificações, Perfil, Favorito, Compartilhar, Privacidade, Câmera e Menu
-- **Jogo de Associação**:
-  - Exibe um ícone por pergunta, com 4 opções de resposta embaralhadas
-  - Barra de progresso mostrando questão atual vs. total
-  - Feedback imediato após resposta: verde para acerto, vermelho para erro, com explicação
-  - Tela de resultado com contagem de acertos, erros e percentual
-  - Opções de jogar novamente ou voltar à lista
+
+**Lista educativa com 20 ícones:**
+- Cada card exibe o ícone real (Material Design via `react-icons/md`) com nome e descrição em linguagem simples
+- Ícones cobertos: Pesquisar (`MdSearch`), Configurações (`MdSettings`), Início (`MdHome`), Notificações (`MdNotifications`), Perfil (`MdPerson`), Favorito (`MdFavorite`), Compartilhar (`MdShare`), Privacidade (`MdLock`), Câmera (`MdCameraAlt`), Menu (`MdMenu`), Voltar (`MdArrowBack`), Ligar (`MdPhone`), Mensagem (`MdMessage`), Galeria (`MdPhotoLibrary`), Localização (`MdLocationOn`), Sinal/Wi-Fi (`MdWifi`), Editar (`MdEdit`), Adicionar (`MdAddCircle`), Lixeira (`MdDelete`), Pagamento (`MdCreditCard`)
+
+**Bottom Sheet de variações (ao tocar em um card):**
+- Painel deslizante mostrando como o mesmo conceito aparece em diferentes aplicativos reais
+- Cada variação tem um ícone próprio — quando a variação tem representação fiel em `react-icons`, usa um componente (`Icone` + `cor`); quando o unicode/emoji já representa bem, usa o caractere diretamente (`simbolo`)
+- Ícones reais usados nas variações (exemplos): `MdIosShare` (compartilhar no iOS), `MdForward` (encaminhar no WhatsApp), `MdQrCode2` (QR Code), `MdDocumentScanner` (digitalizar), `MdCall`/`MdCallEnd` (atender/desligar), `MdDoneAll` azul (mensagem lida no WhatsApp), `SiGooglephotos` (Google Fotos), `MdWifiOff` (sem conexão), `MdBolt` (Pix), `MdTapAndPlay` (NFC), entre outros
+- Pode ser fechado pelo botão "Entendi", pelo "✕" ou tocando no fundo escuro
+
+**Jogo de Associação:**
+- A cada rodada, **10 ícones são selecionados aleatoriamente** dos 20 disponíveis e embaralhados — a sequência é diferente a cada jogo
+- Cada pergunta exibe o ícone real (Material Design) e oferece 4 opções de resposta embaralhadas
+- As 3 opções erradas são sorteadas do pool completo de 20, não apenas dos 10 selecionados
+- Barra de progresso mostrando questão atual vs. total (ex: 3/10)
+- Feedback imediato: verde para acerto, vermelho para erro, com explicação do ícone
+- Tela de resultado com acertos, erros, total e percentual
+- Opções de jogar novamente (novo sorteio aleatório) ou voltar à lista
 
 #### Assistente de Ajuda
 - Botão flutuante "? Ajuda" presente em todas as telas
@@ -99,6 +129,7 @@ Protótipo de interface (front-end estático, sem backend) do **Ecossistema Nave
 ### Backend e Persistência
 - Autenticação e criação de perfil do usuário
 - Banco de dados para salvar progresso do aluno (acertos, tempo de resolução, módulos concluídos)
+- Persistência dos documentos adicionados pelo usuário entre sessões (atualmente apenas em memória)
 - Analytics invisível: metrificação do tempo de resolução e taxa de acertos em background
 - Sincronização de dados entre sessões
 
@@ -152,7 +183,7 @@ Acesse em: `http://localhost:5173`
 navega-plus/
 ├── src/
 │   ├── context/
-│   │   └── AppContext.jsx        # Estado global: tela ativa, fonte, contraste
+│   │   └── AppContext.jsx        # Estado global: tela ativa, fonte (fs), contraste
 │   ├── components/
 │   │   ├── PhoneFrame.jsx        # Frame visual do smartphone
 │   │   ├── BarraTopo.jsx         # Cabeçalho com título e botão Voltar
@@ -164,8 +195,10 @@ navega-plus/
 │   │   ├── Saude.jsx
 │   │   ├── Agendamento.jsx
 │   │   ├── Medicamentos.jsx
-│   │   ├── Documentos.jsx
-│   │   └── AlfabetizacaoVisual.jsx
+│   │   ├── Documentos.jsx        # Repositório de documentos com adição e exclusão
+│   │   ├── SimuladorHub.jsx      # Hub de entrada dos simuladores de apps
+│   │   └── AlfabetizacaoVisual.jsx  # Lista educativa + jogo de associação
+│   ├── simuladores/              # Telas individuais de cada app simulado
 │   ├── App.jsx                   # Roteador principal
 │   ├── main.jsx
 │   └── index.css
@@ -173,3 +206,16 @@ navega-plus/
 ├── package.json
 └── vite.config.js
 ```
+
+---
+
+## Decisões Técnicas Relevantes
+
+### Por que `fs()` em vez de CSS `zoom`
+A primeira abordagem para escala de fonte usava `zoom` no `PhoneFrame`. Isso causava dois problemas: (1) ao aplicar `zoom: 1.15` em um container de 390px, o conteúdo interno ficava com 448px efetivos, causando clipping horizontal; (2) conteúdo renderizado via `createPortal` (ex: bottom sheets) ficava fora da árvore DOM afetada pelo `zoom`, ignorando a escala. A função `fs(n)` resolve os dois problemas pois é chamada em tempo de render e o valor calculado é aplicado diretamente como `style={{ fontSize: fs(n) }}` em cada elemento.
+
+### Estrutura de dados do jogo de associação
+Cada entrada de ícone (`par`) no array `pares` de `AlfabetizacaoVisual.jsx` armazena: `Icone` (componente react-icons), `cor` (hex), `nome`, `dica`, e `variacoes[]`. Cada variação pode ter `{ Icone, cor, app, descricao }` (quando existe ícone fiel na biblioteca) ou `{ simbolo, app, descricao }` (quando o unicode/emoji já representa bem). O BottomSheet renderiza condicionalmente: `v.Icone ? <v.Icone /> : v.simbolo`.
+
+### Documentos: memória vs. persistência
+Os documentos adicionados pelo usuário são armazenados em `useState` local no componente `Documentos`. Não há uso de `localStorage` ou backend — os dados são perdidos ao encerrar a sessão. Isso é intencional para o estágio atual de protótipo; a persistência real depende de autenticação e banco de dados (pendente de implementação).

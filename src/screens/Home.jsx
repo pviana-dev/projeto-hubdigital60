@@ -26,40 +26,45 @@ const categorias = [
     cor: '#d97706',
     corClara: '#fef3c7',
   },
+  {
+    id: 'simuladores',
+    emoji: '📱',
+    titulo: 'Praticar Aplicativos',
+    descricao: 'WhatsApp, Maps, YouTube e mais',
+    cor: '#0891b2',
+    corClara: '#cffafe',
+  },
 ]
 
 export default function Home() {
-  const { navegar, altoContraste } = useApp()
+  const { navegar, altoContraste, fs } = useApp()
 
   const bg = altoContraste ? '#000' : '#f9fafb'
   const card = altoContraste ? '#1a1a1a' : '#fff'
-  const texto = altoContraste ? '#fff' : '#111827'
   const subtexto = altoContraste ? '#d1d5db' : '#6b7280'
 
   return (
     <div className="relative flex flex-col min-h-full" style={{ background: bg }}>
-      {/* Cabeçalho */}
       <div className="px-5 pt-5 pb-4" style={{ background: altoContraste ? '#1a1a1a' : '#1d4ed8' }}>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-white text-base">Olá! Bem-vindo ao</p>
-            <h1 className="text-white font-bold" style={{ fontSize: 28, lineHeight: 1.1 }}>Navega+</h1>
+            <p className="text-white" style={{ fontSize: fs(16) }}>Olá! Bem-vindo ao</p>
+            <h1 className="text-white font-bold" style={{ fontSize: fs(28), lineHeight: 1.1 }}>Navega+</h1>
           </div>
           <button
             onClick={() => navegar('acessibilidade')}
             className="flex items-center justify-center rounded-full"
-            style={{ width: 52, height: 52, background: 'rgba(255,255,255,0.2)', fontSize: 24 }}
+            style={{ width: 52, height: 52, background: 'rgba(255,255,255,0.2)', fontSize: fs(24) }}
             aria-label="Configurações"
           >
             ⚙️
           </button>
         </div>
-        <p className="mt-3 text-base" style={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.4 }}>
+        <p className="mt-3" style={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.4, fontSize: fs(16) }}>
           O que você quer fazer hoje?
         </p>
       </div>
 
-      {/* Categorias */}
       <div className="flex flex-col gap-4 px-5 py-5">
         {categorias.map(cat => (
           <button
@@ -78,28 +83,27 @@ export default function Home() {
                 width: 72,
                 height: 72,
                 background: altoContraste ? 'transparent' : cat.corClara,
-                fontSize: 36,
+                fontSize: fs(36),
                 border: altoContraste ? `2px solid ${cat.cor}` : 'none',
               }}
             >
               {cat.emoji}
             </div>
             <div className="flex-1">
-              <p className="font-bold text-xl" style={{ color: altoContraste ? '#fff' : cat.cor }}>{cat.titulo}</p>
-              <p className="mt-1 text-base" style={{ color: subtexto }}>{cat.descricao}</p>
+              <p className="font-bold" style={{ fontSize: fs(20), color: altoContraste ? '#fff' : cat.cor }}>{cat.titulo}</p>
+              <p className="mt-1" style={{ fontSize: fs(16), color: subtexto }}>{cat.descricao}</p>
             </div>
-            <span style={{ fontSize: 24, color: altoContraste ? '#fff' : '#9ca3af' }}>›</span>
+            <span style={{ fontSize: fs(24), color: altoContraste ? '#fff' : '#9ca3af' }}>›</span>
           </button>
         ))}
 
-        {/* Banner informativo */}
         <div
           className="rounded-3xl px-5 py-4 mt-1"
           style={{ background: altoContraste ? '#1a1a00' : '#fef3c7', border: altoContraste ? '1px solid #854d0e' : 'none' }}
         >
           <div className="flex items-start gap-3">
-            <span style={{ fontSize: 28 }}>💡</span>
-            <p style={{ color: altoContraste ? '#fde68a' : '#92400e', fontSize: 15, lineHeight: 1.5 }}>
+            <span style={{ fontSize: fs(28) }}>💡</span>
+            <p style={{ color: altoContraste ? '#fde68a' : '#92400e', fontSize: fs(15), lineHeight: 1.5 }}>
               <strong>Dica:</strong> Tudo aqui é simulado. Você pode praticar sem medo de errar!
             </p>
           </div>
